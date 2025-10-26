@@ -5,7 +5,7 @@ const PostCategory = ({ className, children, to }) => {
   const newClassName = `p-3 text-center rounded-lg font-semibold ${className}`;
   return (
     <Link to={to}>
-      <div className={newClassName}>{children}</div>;
+      <div className={newClassName}>{children}</div>
     </Link>
   );
 };

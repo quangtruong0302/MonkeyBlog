@@ -15,7 +15,7 @@ const PostManage = () => {
             <Button>Add new post</Button>
           </Link>
         </div>
-        <div className="w-full max-w-[300px]">
+        <div className="w-full max-w-[600px]">
           <input
             type="text"
             className="w-full p-4 border border-gray-300 border-solid rounded-lg outline-none"

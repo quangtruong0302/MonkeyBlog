@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0",
+    "baseUrl": "./",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@libs/*": ["src/libs/*"],
+      "@pages/*": ["src/pages/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@contexts/*": ["src/contexts/*"],
+      "@firebase-app/*": ["src/firebase-app/*"],
+      "@module/*": ["src/module/*"],
+      "@utils/*": ["src/utils/*"]
+    },
+    "checkJs": false
+  }
+}

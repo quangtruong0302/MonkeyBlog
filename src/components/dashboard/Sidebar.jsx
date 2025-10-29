@@ -66,7 +66,7 @@ const sidebarLinks = [
   },
   {
     title: "User",
-    url: "/manage/user",
+    url: "/manage/users",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +109,7 @@ const sidebarLinks = [
 
 const Sidebar = () => {
   return (
-    <div className="w-[300px] bg-white shadow-[10px_10px_20px_rgba(218,213,213,0.15)] rounded-xl hidden lg:block h-screen">
+    <div className=" bg-white shadow-[10px_10px_20px_rgba(218,213,213,0.15)] rounded-xl hidden lg:block h-full">
       <div className="p-5">
         {sidebarLinks.map((link) =>
           link.onClick ? (

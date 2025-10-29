@@ -38,7 +38,7 @@ const ImageUpload = (props) => {
         <Fragment>
           <img
             src={image}
-            className="object-cover w-full h-full max-h-[500px]"
+            className={`object-cover w-full h-full max-h-[500px] ${className}`}
             alt=""
           />
           <button

@@ -1,28 +1,119 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import DashboardHeading from "@components/dashboard/DashboardHeading";
 import Table from "@components/table/Table";
+import View from "@components/action/View";
+import Delete from "@components/action/Delete";
+import Edit from "@components/action/Edit";
 import Pagination from "@components/pagination/Pagination";
 import Button from "@components/button/Button";
 import { Link } from "react-router-dom";
+import { useFirestorePagination } from "@hooks/useFirestorePagination";
+import { debounce } from "lodash";
+import LoadingSpiner from "@components/loading/LoadingSpiner";
+import { deleteDoc, doc, getDoc } from "firebase/firestore";
+import { db } from "@firebase-app/firebaseConfig";
+import LabelStatus from "@components/label/LabelStatus";
+import { postStatus } from "@utils/constant";
+import Toggle from "@components/toggle/Toggle";
+import Swal from "sweetalert2";
 
 const PostManage = () => {
+  const [searchInput, setSearchInput] = useState("");
+  const [categoryMap, setCategoryMap] = useState({});
+  const [userMap, setUserMap] = useState({});
+
+  const {
+    data: posts,
+    loading,
+    totalPages,
+    currentPage,
+    fetchPage,
+  } = useFirestorePagination("posts", {
+    pageSize: 3,
+    orderField: "title",
+    searchField: "title",
+    searchValue: searchInput,
+  });
+
+  const handleChangeSearchInput = debounce((e) => {
+    setSearchInput(e.target.value);
+  }, 500);
+
+  const fetchCategory = async (id) => {
+    const docRef = doc(db, "categories", id);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists() ? docSnap.data() : null;
+  };
+
+  const fetchUser = async (id) => {
+    const docRef = doc(db, "users", id);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists() ? docSnap.data() : null;
+  };
+
+  useEffect(() => {
+    const fetchExtraData = async () => {
+      if (!posts || posts.length === 0) return;
+      const newCategoryMap = { ...categoryMap };
+      const newUserMap = { ...userMap };
+      for (const post of posts) {
+        if (post.categoryId && !newCategoryMap[post.categoryId]) {
+          const cat = await fetchCategory(post.categoryId);
+          newCategoryMap[post.categoryId] = cat?.name || "Unknown";
+        }
+        if (post.userId && !newUserMap[post.userId]) {
+          const user = await fetchUser(post.userId);
+          newUserMap[post.userId] = user?.fullname || "Unknown";
+        }
+      }
+
+      setCategoryMap(newCategoryMap);
+      setUserMap(newUserMap);
+    };
+
+    fetchExtraData();
+  }, [posts]);
+  const handleDeletePost = async (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const colRef = doc(db, "posts", id);
+        await deleteDoc(colRef);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your category has been deleted.",
+          icon: "success",
+        });
+        fetchPage(currentPage);
+      }
+    });
+  };
+
   return (
-    <div>
-      <DashboardHeading title="All posts"></DashboardHeading>
-      <div className="flex items-center justify-between gap-5 my-10">
-        <div className="">
-          <Link to={"/manage/add-post"}>
-            <Button>Add new post</Button>
-          </Link>
-        </div>
+    <div className="flex flex-col gap-5">
+      <DashboardHeading title="All posts" />
+      <div className="flex items-center justify-between gap-5">
+        <Link to="/manage/add-post">
+          <Button>Add new post</Button>
+        </Link>
+
         <div className="w-full max-w-[600px]">
           <input
             type="text"
             className="w-full p-4 border border-gray-300 border-solid rounded-lg outline-none"
             placeholder="Search post..."
+            onChange={(e) => handleChangeSearchInput(e)}
           />
         </div>
       </div>
+
       <Table>
         <thead className="bg-gray-50 text-gray-700 uppercase text-xs font-semibold">
           <tr>
@@ -31,130 +122,96 @@ const PostManage = () => {
             <th className="px-6 py-4 text-left">Category</th>
             <th className="px-6 py-4 text-left">Author</th>
             <th className="px-6 py-4 text-left">Status</th>
+            <th className="px-6 py-4 text-left">Hot</th>
             <th className="px-6 py-4 text-left">Actions</th>
           </tr>
         </thead>
 
         <tbody className="divide-y divide-gray-100">
-          <tr className="hover:bg-gray-50 transition">
-            <td className="px-6 py-4">1</td>
+          {loading ? (
+            <tr>
+              <td colSpan="6" className="py-10 text-center">
+                <LoadingSpiner size="45px" borderSize="5px" />
+              </td>
+            </tr>
+          ) : posts.length > 0 ? (
+            posts.map((post) => (
+              <tr key={post.id} className="hover:bg-gray-50 transition">
+                <td className="px-6 py-4" title={post.id}>
+                  {post.id.slice(0, 5)}...
+                </td>
 
-            {/* Cột Post: Giới hạn chiều rộng + cho phép xuống dòng */}
-            <td className="px-6 py-4 max-w-xs break-words text-gray-900 font-medium">
-              Đây là một bài viết có tiêu đề rất rất dài để kiểm tra xem bảng có
-              tự động xuống dòng hay không, và tránh che các cột khác.
-            </td>
+                <td className="px-6 py-4 text-gray-900 font-medium flex items-center gap-3">
+                  <div className="w-30 rounded-sm">
+                    <img
+                      src={post.imageUrl && post.imageUrl}
+                      alt=""
+                      className="w-full h-auto rounded-sm"
+                    />
+                  </div>
+                  <div className="flex-1 flex flex-col gap-1">
+                    <div>{post.title}</div>
+                    <div className="text-sm text-gray-500">
+                      CreatedAt:{" "}
+                      {post.createdAt.toDate().toLocaleDateString("vi-VN")}
+                    </div>
+                  </div>
+                </td>
 
-            <td className="px-6 py-4 text-gray-500">Tin tức</td>
-            <td className="px-6 py-4 text-gray-500">Nguyễn Văn A</td>
-            <td className="px-6 py-4">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                Published
-              </span>
-            </td>
-            <td className="px-6 py-4 text-sm">
-              <button className="text-blue-600 hover:underline mr-3">
-                Edit
-              </button>
-              <button className="text-red-600 hover:underline">Delete</button>
-            </td>
-          </tr>
-          <tr className="hover:bg-gray-50 transition">
-            <td className="px-6 py-4">1</td>
+                <td className="px-6 py-4 text-gray-500">
+                  {categoryMap[post.categoryId] || "Loading..."}
+                </td>
+                <td className="px-6 py-4 text-gray-500">
+                  {userMap[post.userId] || "Loading..."}
+                </td>
 
-            {/* Cột Post: Giới hạn chiều rộng + cho phép xuống dòng */}
-            <td className="px-6 py-4 max-w-xs break-words text-gray-900 font-medium">
-              Đây là một bài viết có tiêu đề rất rất dài để kiểm tra xem bảng có
-              tự động xuống dòng hay không, và tránh che các cột khác.
-            </td>
+                <td className="px-6 py-4">
+                  {post.status === Number(postStatus.APPROVED) && (
+                    <LabelStatus type="success">Approved</LabelStatus>
+                  )}
+                  {post.status === Number(postStatus.PENDING) && (
+                    <LabelStatus type="warning">Pending</LabelStatus>
+                  )}
+                  {post.status === Number(postStatus.REJECT) && (
+                    <LabelStatus type="danger">Reject</LabelStatus>
+                  )}
+                </td>
+                <td className="px-6 py-4 text-gray-500">
+                  <Toggle
+                    on={post.hot}
+                    // onClick={() => setValue("hot", !watchHot)}
+                  ></Toggle>
+                </td>
 
-            <td className="px-6 py-4 text-gray-500">Tin tức</td>
-            <td className="px-6 py-4 text-gray-500">Nguyễn Văn A</td>
-            <td className="px-6 py-4">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                Published
-              </span>
-            </td>
-            <td className="px-6 py-4 text-sm">
-              <button className="text-blue-600 hover:underline mr-3">
-                Edit
-              </button>
-              <button className="text-red-600 hover:underline">Delete</button>
-            </td>
-          </tr>
-          <tr className="hover:bg-gray-50 transition">
-            <td className="px-6 py-4">1</td>
-
-            {/* Cột Post: Giới hạn chiều rộng + cho phép xuống dòng */}
-            <td className="px-6 py-4 max-w-xs break-words text-gray-900 font-medium">
-              Đây là một bài viết có tiêu đề rất rất dài để kiểm tra xem bảng có
-              tự động xuống dòng hay không, và tránh che các cột khác.
-            </td>
-
-            <td className="px-6 py-4 text-gray-500">Tin tức</td>
-            <td className="px-6 py-4 text-gray-500">Nguyễn Văn A</td>
-            <td className="px-6 py-4">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                Published
-              </span>
-            </td>
-            <td className="px-6 py-4 text-sm">
-              <button className="text-blue-600 hover:underline mr-3">
-                Edit
-              </button>
-              <button className="text-red-600 hover:underline">Delete</button>
-            </td>
-          </tr>
-          <tr className="hover:bg-gray-50 transition">
-            <td className="px-6 py-4">1</td>
-
-            {/* Cột Post: Giới hạn chiều rộng + cho phép xuống dòng */}
-            <td className="px-6 py-4 max-w-xs break-words text-gray-900 font-medium">
-              Đây là một bài viết có tiêu đề rất rất dài để kiểm tra xem bảng có
-              tự động xuống dòng hay không, và tránh che các cột khác.
-            </td>
-
-            <td className="px-6 py-4 text-gray-500">Tin tức</td>
-            <td className="px-6 py-4 text-gray-500">Nguyễn Văn A</td>
-            <td className="px-6 py-4">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                Published
-              </span>
-            </td>
-            <td className="px-6 py-4 text-sm">
-              <button className="text-blue-600 hover:underline mr-3">
-                Edit
-              </button>
-              <button className="text-red-600 hover:underline">Delete</button>
-            </td>
-          </tr>
-          <tr className="hover:bg-gray-50 transition">
-            <td className="px-6 py-4">1</td>
-
-            {/* Cột Post: Giới hạn chiều rộng + cho phép xuống dòng */}
-            <td className="px-6 py-4 max-w-xs break-words text-gray-900 font-medium">
-              Đây là một bài viết có tiêu đề rất rất dài để kiểm tra xem bảng có
-              tự động xuống dòng hay không, và tránh che các cột khác.
-            </td>
-
-            <td className="px-6 py-4 text-gray-500">Tin tức</td>
-            <td className="px-6 py-4 text-gray-500">Nguyễn Văn A</td>
-            <td className="px-6 py-4">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                Published
-              </span>
-            </td>
-            <td className="px-6 py-4 text-sm">
-              <button className="text-blue-600 hover:underline mr-3">
-                Edit
-              </button>
-              <button className="text-red-600 hover:underline">Delete</button>
-            </td>
-          </tr>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <Link to={`/post/${post.slug}`}>
+                      <View />
+                    </Link>
+                    <Link to={`/manage/update-post/${post.id}`}>
+                      <Edit />
+                    </Link>
+                    <Delete onClick={() => handleDeletePost(post.id)} />
+                  </div>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6" className="text-center py-10 text-gray-500">
+                No posts found
+              </td>
+            </tr>
+          )}
         </tbody>
       </Table>
+
       <div className="mt-10 flex justify-center">
-        <Pagination />
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={(page) => fetchPage(page)}
+        />
       </div>
     </div>
   );

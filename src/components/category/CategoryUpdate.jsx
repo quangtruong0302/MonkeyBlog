@@ -5,23 +5,23 @@ import Input from "@components/Input/Input";
 import Label from "@components/label/Label";
 import LoadingSpiner from "@components/loading/LoadingSpiner";
 import DashboardHeading from "@components/dashboard/DashboardHeading";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { categoryStatus } from "@utils/constant";
 import slugify from "slugify";
-import { addDoc, collection } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@firebase-app/firebaseConfig";
 import { toast, ToastContainer } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const CategoryAddNew = () => {
+const CategoryUpdate = () => {
   const {
     control,
     // setValue,
     handleSubmit,
     watch,
     reset,
-    formState: { isSubmitting, isValid },
+    formState: { isSubmitting },
   } = useForm({
     mode: "onChange",
     defaultValues: {
@@ -30,36 +30,40 @@ const CategoryAddNew = () => {
       status: Number(categoryStatus.APPROVED),
     },
   });
+  const { id } = useParams();
   const navigate = useNavigate();
-  const watchStatus = Number(watch("status"));
-  const handleAddNewCategory = async (values) => {
-    if (!isValid) return;
-    const cloneValues = { ...values };
-    cloneValues.slug = slugify(values.slug || values.name, {
-      lower: true,
-      locale: "vi",
-    });
-    cloneValues.status = Number(values.status);
+  useEffect(() => {
+    const fetchData = async () => {
+      const colRef = doc(db, "categories", id);
+      const singleDoc = await getDoc(colRef);
+      const data = singleDoc.data();
+      console.log(data);
+      reset(singleDoc.data());
+      console.log(...singleDoc.data());
+    };
+    fetchData();
+  }, [id, reset]);
+  if (!id) return null;
 
-    const colRef = collection(db, "categories");
-    await addDoc(colRef, {
-      ...cloneValues,
-      createdAt: new Date(),
+  const watchStatus = Number(watch("status"));
+  console.log(typeof watchStatus);
+  const handleUpdateCategory = async (values) => {
+    const colRef = doc(db, "categories", id);
+    await updateDoc(colRef, {
+      name: values.name,
+      slug: slugify(values.slug || values.name, { lower: true, locale: "vi" }),
+      status: Number(values.status),
       updatedAt: new Date(),
     });
-    toast.success("Category added successfully!");
-    reset({
-      name: "",
-      slug: "",
-      status: `${categoryStatus.APPROVED}`,
-      createdAt: new Date(),
-    });
     navigate("/manage/categories");
+    toast.success("Category update successful!");
   };
   return (
-    <div className="flex flex-col gap-10">
-      <DashboardHeading title="Add new category"></DashboardHeading>
-      <form onSubmit={handleSubmit(handleAddNewCategory)}>
+    <div>
+      <DashboardHeading title="Update category"></DashboardHeading>
+      <div className="mt-2 text-sm text-gray-500">{`Update your category id: ${id}`}</div>
+
+      <form className="mt-10" onSubmit={handleSubmit(handleUpdateCategory)}>
         <div className="grid grid-cols-2 gap-y-10 gap-x-5 mb-10">
           <Field>
             <Label>Name</Label>
@@ -109,7 +113,7 @@ const CategoryAddNew = () => {
             {isSubmitting ? (
               <LoadingSpiner size={"30px"} borderSize={"3px"}></LoadingSpiner>
             ) : (
-              "Add new category"
+              "Update category"
             )}
           </Button>
         </div>
@@ -118,4 +122,4 @@ const CategoryAddNew = () => {
   );
 };
 
-export default CategoryAddNew;
+export default CategoryUpdate;

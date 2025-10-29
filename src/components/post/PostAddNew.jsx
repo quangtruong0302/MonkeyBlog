@@ -1,6 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import slugify from "slugify";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 import { toast, ToastContainer } from "react-toastify";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
@@ -21,8 +23,13 @@ import LoadingSpiner from "@components/loading/LoadingSpiner";
 
 import useUploadImage from "@hooks/useUploadImage";
 import { postStatus } from "@utils/constant";
+import { useNavigate } from "react-router-dom";
 
 const PostAddNew = () => {
+  const schemaValidate = Yup.object({
+    title: Yup.string().required("Title is required. Please enter title."),
+  });
+  const navigate = useNavigate();
   useEffect(() => {
     document.title = "Monkey Bloging - Add new post";
   }, []);
@@ -30,7 +37,15 @@ const PostAddNew = () => {
   const [categories, setCategories] = useState([]);
   const [selectCategory, setSelectCategory] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const { control, watch, handleSubmit, setValue, reset } = useForm({
+  const {
+    control,
+    watch,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schemaValidate),
     mode: "onChange",
     defaultValues: {
       title: "",
@@ -48,7 +63,7 @@ const PostAddNew = () => {
     handleDeleteImage,
     handleSelectImage,
   } = useUploadImage();
-  const watchStatus = watch("status");
+  const watchStatus = Number(watch("status"));
   const watchHot = watch("hot");
   // const watchCategory = watch("category");
 
@@ -56,15 +71,19 @@ const PostAddNew = () => {
     setIsLoading(true);
     try {
       const cloneValues = { ...values };
-      cloneValues.slug = slugify(values.slug || values.title, { lower: true });
+      cloneValues.slug = slugify(values.slug || values.title, {
+        lower: true,
+        locale: "vi",
+      });
       cloneValues.status = Number(values.status);
-      cloneValues.imageUrl = imgCloud.url || "";
+      cloneValues.imageUrl = imgCloud || "";
       cloneValues.userId = userInfor.uid;
-      cloneValues.createdAt = new Date();
 
       const colRef = collection(db, "posts");
       await addDoc(colRef, {
         ...cloneValues,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
       toast.success("Post added successfully!");
       reset({
@@ -78,6 +97,7 @@ const PostAddNew = () => {
       setImgCloud({});
       setProgress(0);
       setSelectCategory({});
+      navigate("/manage/posts");
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -104,12 +124,16 @@ const PostAddNew = () => {
     }
     getData();
   }, []);
-
+  useEffect(() => {
+    const arrayErrors = Object.values(errors);
+    if (arrayErrors.length > 0) {
+      toast.error(arrayErrors[0].message);
+    }
+  }, [errors]);
   return (
-    <div className="">
-      <ToastContainer></ToastContainer>
+    <div className="flex flex-col gap-10">
       <DashboardHeading title="Add new post"></DashboardHeading>
-      <form onSubmit={handleSubmit(handleAddNewPost)} className="mt-10">
+      <form onSubmit={handleSubmit(handleAddNewPost)}>
         <div className="grid grid-cols-2 gap-y-10 gap-x-5 mb-10">
           <Field>
             <Label htmlFor={"title"}>Title</Label>
@@ -129,6 +153,10 @@ const PostAddNew = () => {
               name="slug"
               id="slug"
             ></Input>
+            <span className="text-sm text-slate-600">
+              * Slug (e.g., your-blog-title). If left empty, it will be
+              generated from the title.
+            </span>
           </Field>
           <Field>
             <Label>Category</Label>
@@ -158,7 +186,7 @@ const PostAddNew = () => {
               name="image"
               onChange={handleSelectImage}
               progress={progress}
-              image={imgCloud.url}
+              image={imgCloud}
               handleDeleteImage={handleDeleteImage}
             ></ImageUpload>
           </Field>
@@ -168,24 +196,24 @@ const PostAddNew = () => {
               <Radio
                 name="status"
                 control={control}
-                value={`${postStatus.APPROVED}`}
-                checked={watchStatus === `${postStatus.APPROVED}`}
+                value={Number(postStatus.APPROVED)}
+                checked={watchStatus === Number(Number(postStatus.APPROVED))}
               >
                 Approved
               </Radio>
               <Radio
                 name="status"
                 control={control}
-                value={`${postStatus.PENDING}`}
-                checked={watchStatus === `${postStatus.PENDING}`}
+                value={Number(postStatus.PENDING)}
+                checked={watchStatus === Number(Number(postStatus.PENDING))}
               >
                 Pending
               </Radio>
               <Radio
                 name="status"
                 control={control}
-                value={`${postStatus.REJECT}`}
-                checked={watchStatus === postStatus.REJECT}
+                value={Number(postStatus.REJECT)}
+                checked={watchStatus === Number(Number(postStatus.REJECT))}
               >
                 Reject
               </Radio>

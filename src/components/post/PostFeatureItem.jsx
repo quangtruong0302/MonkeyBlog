@@ -15,7 +15,6 @@ const PostFeatureItem = ({ data }) => {
     const fetchCategory = async () => {
       const docRef = doc(db, "categories", data.categoryId);
       const docSnap = await getDoc(docRef);
-      // console.log(docSnap.data());
       setCategory(docSnap.data());
     };
     fetchCategory();
@@ -32,15 +31,13 @@ const PostFeatureItem = ({ data }) => {
 
   const createdAt = data.createdAt?.toDate();
   const formattedDate = createdAt
-    ? createdAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+    ? createdAt.toLocaleDateString("vi-VI", { month: "short", day: "numeric" })
     : "";
-
-  console.log(data);
   return (
     <div className="relative rounded-lg border border-gray-200 boxShadow h-[333px] select-none">
       <img
         className="rounded-lg w-full h-full"
-        src={data.imageUrl}
+        src={data?.imageUrl}
         alt="hinh-anh"
       />
       <div className="bg-black opacity-50 absolute inset-0 rounded-lg"></div>
@@ -48,16 +45,18 @@ const PostFeatureItem = ({ data }) => {
         <div className="flex items-center justify-between gap-10">
           <PostCategory
             className={"bg-[#F3EDFF] text-[#636e72]"}
-            to={category.slug}
+            to={category?.slug}
           >
-            {category.name}
+            {category?.name}
           </PostCategory>
           <PostMeta
             date={formattedDate}
-            authorName={getLastName(user.fullname)}
+            authorName={getLastName(user?.fullname)}
           ></PostMeta>
         </div>
-        <PostTitle className={"text-white text-2xl"}>{data.title}</PostTitle>
+        <PostTitle className={"text-white text-2xl"} slug={data.slug}>
+          {data.title}
+        </PostTitle>
       </div>
     </div>
   );

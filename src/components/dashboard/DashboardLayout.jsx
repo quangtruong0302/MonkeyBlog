@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { Outlet } from "react-router-dom";
 import DashboardHeader from "./DashboardHeader";
 import Sidebar from "./Sidebar";
 import useAuth from "@contexts/useAuth";
 import NotFoundPage from "@pages/NotFoundPage";
+import { ToastContainer } from "react-toastify";
 
 const DashboardLayout = () => {
   const { userInfor } = useAuth();
@@ -24,15 +25,20 @@ const DashboardLayout = () => {
   }
 
   return (
-    <div className="max-w-[1600px] mx-auto">
-      <DashboardHeader />
-      <div className="flex gap-10">
+    <Fragment>
+      <div className="max-w-[1600px] mx-auto">
+        {/* <ToastContainer></ToastContainer> */}
+        <DashboardHeader />
+      </div>
+      <div className="flex gap-5">
         <Sidebar />
-        <div className="w-full py-10">
-          <Outlet />
+        <div className="w-full py-5">
+          <div className="pr-5">
+            <Outlet />
+          </div>
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 };
 

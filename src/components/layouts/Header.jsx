@@ -28,62 +28,6 @@ const MENU_ITEMS = [
 const Header = () => {
   const { userInfor } = useAuth();
   return (
-    // <header className="py-5 shadow-md">
-    //   <div className="container flex items-center justify-between">
-    //     <div className="flex items-center justify-between gap-10">
-    //       <a href="/">
-    //         <img src="/images/logo.png" alt="" className="w-10" />
-    //       </a>
-    //       <ul className="flex items-center justify-center gap-1">
-    //         {MENU_ITEMS.map((item) => (
-    //           <li key={item.id}>
-    //             <a
-    //               href={item.url}
-    //               className="block py-3 px-5 rounded-sm hover:text-white hover:bg-primary transition-all font-semibold"
-    //             >
-    //               {item.title}
-    //             </a>
-    //           </li>
-    //         ))}
-    //       </ul>
-    //     </div>
-    //     <div className="flex items-center justify-between gap-5">
-    //       <div className="w-[500px]">
-    //         <div className="border border-gray-300 rounded-sm px-4 py-3 flex items-center justify-between gap-4">
-    //           <input
-    //             type="text"
-    //             placeholder="Search post..."
-    //             className="outline-none w-full"
-    //           />
-    //           <FontAwesomeIcon
-    //             icon={faMagnifyingGlass}
-    //             className="text-gray-500"
-    //           />
-    //         </div>
-    //       </div>
-
-    //       <div>
-    //         {!userInfor ? (
-    //           <div className="flex gap-3">
-    //             <Link to={"/sign-in"}>
-    //               <Button>Sign in</Button>
-    //             </Link>
-    //             <Link to={"/sign-up"}>
-    //               <Button>Sign up</Button>
-    //             </Link>
-    //           </div>
-    //         ) : (
-    //           <div className="">
-    //             <span>Welcome back, </span>
-    //             <strong className="text-primary">
-    //               {getLastName(userInfor?.displayName || "")}
-    //             </strong>
-    //           </div>
-    //         )}
-    //       </div>
-    //     </div>
-    //   </div>
-    // </header>
     <header className="py-4 sm:py-5 shadow-md">
       <div className="container flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 lg:gap-0">
         {/* Logo và Menu */}

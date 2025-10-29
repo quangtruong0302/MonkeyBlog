@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { uploadToCloudinary } from "@utils/uploadToCloudinary";
-import { deleteFromCloudinary } from "@utils/deleteFromCloudinary";
+// import { deleteFromCloudinary } from "@utils/deleteFromCloudinary";
 
 const useUploadImage = () => {
   const [progress, setProgress] = useState(0);
-  const [imgCloud, setImgCloud] = useState({});
+  const [imgCloud, setImgCloud] = useState("");
 
   const handleSelectImage = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setImgCloud(await uploadToCloudinary(file, setProgress));
+    const url = await uploadToCloudinary(file, setProgress);
+    setImgCloud(url);
   };
   const handleDeleteImage = async () => {
-    await deleteFromCloudinary(imgCloud.delete_token);
-    setImgCloud({});
+    setImgCloud("");
     setProgress(0);
   };
   return {

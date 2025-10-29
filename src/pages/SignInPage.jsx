@@ -22,6 +22,7 @@ const SignInPage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (userInfor?.email) navigate("/");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userInfor]);
   const schemaValidate = Yup.object({
     email: Yup.string()
@@ -42,7 +43,7 @@ const SignInPage = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: yupResolver(schemaValidate),
     mode: "onChange",
@@ -53,10 +54,10 @@ const SignInPage = () => {
     confirmPassword: false,
   });
 
-  const onSubmit = async (values) => {
-    if (!isValid) return;
+  const handleSignIn = async (values) => {
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
+      toast.success(`Welcome!`);
     } catch (error) {
       console.log(error);
       toast.error(
@@ -72,7 +73,6 @@ const SignInPage = () => {
   }, [errors]);
   return (
     <div className="flex items-center justify-center h-screen">
-      <ToastContainer></ToastContainer>
       <div className="bg-white w-[550px] h-fit p-8 border border-gray-100 shadow-sm rounded-2xl">
         <img className="mx-auto w-[75px]" src="/images/logo.png" alt="" />
         <div>
@@ -90,11 +90,13 @@ const SignInPage = () => {
             </div>
           </div>
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit(handleSignIn)}
             className="flex flex-col gap-4"
           >
             <Field>
-              <Label htmlFor={"email"} label={"Email address"}></Label>
+              <Label htmlFor={"email"} label={"Email address"}>
+                Email adderss
+              </Label>
               <Input
                 name={"email"}
                 id={"email"}
@@ -105,7 +107,9 @@ const SignInPage = () => {
             </Field>
 
             <Field>
-              <Label htmlFor={"password"} label={"Password"}></Label>
+              <Label htmlFor={"password"} label={"Password"}>
+                Password
+              </Label>
               <Input
                 name={"password"}
                 id={"password"}
@@ -134,7 +138,7 @@ const SignInPage = () => {
               {isSubmitting ? (
                 <LoadingSpiner size={"30px"} borderSize={"3px"}></LoadingSpiner>
               ) : (
-                "Sing in"
+                "Sign in"
               )}
             </Button>
           </form>

@@ -127,13 +127,13 @@ const PostManage = () => {
       <Table>
         <thead className="bg-gray-50 text-gray-700 uppercase text-xs font-semibold">
           <tr>
-            <th className="px-5 py-3 text-left">Id</th>
-            <th className="px-5 py-3 text-left">Post</th>
-            <th className="px-5 py-3 text-left">Category</th>
-            <th className="px-5 py-3 text-left">Author</th>
-            <th className="px-5 py-3 text-left">Status</th>
-            <th className="px-5 py-3 text-left">Feature</th>
-            <th className="px-5 py-3 text-left">Actions</th>
+            <th className="px-5 py-4 text-left">Id</th>
+            <th className="px-5 py-4 text-left">Post</th>
+            <th className="px-5 py-4 text-left">Category</th>
+            <th className="px-5 py-4 text-left">Author</th>
+            <th className="px-5 py-4 text-left">Status</th>
+            <th className="px-5 py-4 text-left">Feature</th>
+            <th className="px-5 py-4 text-left">Actions</th>
           </tr>
         </thead>
 
@@ -147,11 +147,11 @@ const PostManage = () => {
           ) : posts.length > 0 ? (
             posts.map((post) => (
               <tr key={post.id} className="hover:bg-gray-50 transition">
-                <td className="px-5 py-3" title={post.id}>
+                <td className="px-5 py-4" title={post.id}>
                   {post.id.slice(0, 5)}...
                 </td>
 
-                <td className="px-5 py-3 text-gray-900 font-medium flex items-center gap-3">
+                <td className="px-5 py-4 text-gray-900 font-medium flex items-center gap-3">
                   <div className="w-28 rounded-sm">
                     <img
                       src={post.imageUrl && post.imageUrl}
@@ -175,14 +175,14 @@ const PostManage = () => {
                   </div>
                 </td>
 
-                <td className="px-5 py-3 text-gray-500">
+                <td className="px-5 py-4 text-gray-500">
                   {categoryMap[post.categoryId] || "Loading..."}
                 </td>
-                <td className="px-5 py-3 text-gray-500">
+                <td className="px-5 py-4 text-gray-500">
                   {userMap[post.userId] || "Loading..."}
                 </td>
 
-                <td className="px-5 py-3">
+                <td className="px-5 py-4">
                   {post.status === Number(postStatus.APPROVED) && (
                     <LabelStatus type="success">Approved</LabelStatus>
                   )}
@@ -193,14 +193,14 @@ const PostManage = () => {
                     <LabelStatus type="danger">Reject</LabelStatus>
                   )}
                 </td>
-                <td className="px-5 py-3 text-gray-500">
+                <td className="px-5 py-4 text-gray-500">
                   <Toggle
                     on={post.hot}
                     onClick={() => handleChangeHot(post.id, post)}
                   ></Toggle>
                 </td>
 
-                <td className="px-5 py-3">
+                <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
                     <Link to={`/post/${post.slug}`}>
                       <View />

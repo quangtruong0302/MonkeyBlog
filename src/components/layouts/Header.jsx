@@ -27,7 +27,6 @@ const MENU_ITEMS = [
 
 const Header = () => {
   const { userInfor } = useAuth();
-  console.log(userInfor);
   return (
     <header className="py-4 sm:py-5 shadow-md">
       <div className="container flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 lg:gap-0">

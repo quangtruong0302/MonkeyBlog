@@ -8,7 +8,6 @@ import { ToastContainer } from "react-toastify";
 
 const DashboardLayout = () => {
   const { userInfor } = useAuth();
-  console.log(userInfor);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

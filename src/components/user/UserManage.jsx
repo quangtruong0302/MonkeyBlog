@@ -58,8 +58,6 @@ const UserManage = () => {
   };
 
   if (Number(userInfor.role) !== userRole.ADMIN) {
-    console.log(userRole.ADMIN);
-    console.log(userInfor.role);
     return (
       <div className="flex justify-center items-center">
         <div className="text-center text-lg text-gray-500">

@@ -5,7 +5,7 @@ import Input from "@components/Input/Input";
 import Label from "@components/label/Label";
 import LoadingSpiner from "@components/loading/LoadingSpiner";
 import DashboardHeading from "@components/dashboard/DashboardHeading";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { categoryStatus } from "@utils/constant";
 import slugify from "slugify";
@@ -15,6 +15,9 @@ import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const CategoryAddNew = () => {
+  useEffect(() => {
+    document.title = "Add new category";
+  }, []);
   const {
     control,
     handleSubmit,
@@ -57,7 +60,10 @@ const CategoryAddNew = () => {
   };
   return (
     <div className="flex flex-col gap-10">
-      <DashboardHeading title="Add new category"></DashboardHeading>
+      <DashboardHeading
+        title="Add category"
+        desc="Add new category"
+      ></DashboardHeading>
       <form onSubmit={handleSubmit(handleAddNewCategory)}>
         <div className="grid grid-cols-2 gap-y-10 gap-x-5 mb-10">
           <Field>

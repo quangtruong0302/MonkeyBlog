@@ -172,7 +172,10 @@ const PostUpdate = () => {
 
   return (
     <div className="flex flex-col gap-10">
-      <DashboardHeading title="Update post"></DashboardHeading>
+      <DashboardHeading
+        title="Update post"
+        desc="Update your post"
+      ></DashboardHeading>
       <form onSubmit={handleSubmit(handleUpdatePost)}>
         <div className="grid grid-cols-2 gap-y-10 gap-x-5 mb-10">
           <Field>

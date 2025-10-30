@@ -139,12 +139,14 @@ const UserAddNew = () => {
     }
   };
   useEffect(() => {
-    document.title = "Sign up";
     const arrayErrors = Object.values(errors);
     if (arrayErrors.length > 0) {
       toast.error(arrayErrors[0].message);
     }
   }, [errors]);
+  useEffect(() => {
+    document.title = "Add new user";
+  }, []);
 
   const watchStatus = watch("status");
   const watchRole = watch("role");

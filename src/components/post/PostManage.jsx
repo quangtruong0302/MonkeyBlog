@@ -106,6 +106,9 @@ const PostManage = () => {
     toast.success("Post updated successfully!");
   };
 
+  useEffect(() => {
+    document.title = "Manage all posts";
+  }, []);
   return (
     <div className="flex flex-col gap-5">
       <DashboardHeading title="All posts" desc="Manage all posts" />

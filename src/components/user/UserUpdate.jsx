@@ -123,6 +123,9 @@ const UserUpdate = () => {
       toast.error("Update user failed!");
     }
   };
+  useEffect(() => {
+    document.title = "Update user";
+  }, []);
 
   if (!id) return null;
 

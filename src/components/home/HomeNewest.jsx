@@ -42,7 +42,9 @@ const HomeNewest = () => {
           {posts.length > 0 &&
             posts
               .slice(1)
-              .map((post) => <PostNewestItem data={post}></PostNewestItem>)}
+              .map((post) => (
+                <PostNewestItem key={post.id} data={post}></PostNewestItem>
+              ))}
         </div>
       </div>
     </div>

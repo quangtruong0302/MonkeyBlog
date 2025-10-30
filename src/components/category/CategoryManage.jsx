@@ -8,7 +8,7 @@ import Button from "@components/button/Button";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { debounce } from "lodash";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { categoryStatus, userRole } from "@utils/constant";
 import Pagination from "@components/pagination/Pagination";
 import LoadingSpiner from "@components/loading/LoadingSpiner";
@@ -59,6 +59,9 @@ const CategoryManage = () => {
   const handleChangeSearchInput = debounce((e) => {
     setSearchInput(e.target.value);
   }, 500);
+  useEffect(() => {
+    document.title = "Manage all categories";
+  }, []);
 
   if (userInfor.role !== userRole.ADMIN && userInfor.role !== userRole.MOD)
     return (
@@ -68,9 +71,13 @@ const CategoryManage = () => {
         </div>
       </div>
     );
+
   return (
     <div className="flex flex-col gap-5">
-      <DashboardHeading title="Categories"></DashboardHeading>
+      <DashboardHeading
+        title="Categories"
+        desc="Manage all categories"
+      ></DashboardHeading>
       <div className="flex items-center justify-between gap-5">
         <div>
           <Link to={"/manage/add-category"}>

@@ -31,7 +31,7 @@ const PostAddNew = () => {
   });
   const navigate = useNavigate();
   useEffect(() => {
-    document.title = "Monkey Bloging - Add new post";
+    document.title = "Add new post";
   }, []);
   const { userInfor } = useAuth();
   const [categories, setCategories] = useState([]);
@@ -131,7 +131,7 @@ const PostAddNew = () => {
   }, [errors]);
   return (
     <div className="flex flex-col gap-10">
-      <DashboardHeading title="Add new post"></DashboardHeading>
+      <DashboardHeading title="Add post" desc="Add new post"></DashboardHeading>
       <form onSubmit={handleSubmit(handleAddNewPost)}>
         <div className="grid grid-cols-2 gap-y-10 gap-x-5 mb-10">
           <Field>

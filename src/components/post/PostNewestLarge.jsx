@@ -46,7 +46,6 @@ const PostNewestLarge = ({ data }) => {
     fetchUser();
   }, [data?.userId]);
 
-  // Chuyển Firebase Timestamp sang Date object nếu cần
   const formattedDate = data?.createdAt?.toDate
     ? data.createdAt.toDate().toLocaleDateString("vi-VI", {
         month: "short",

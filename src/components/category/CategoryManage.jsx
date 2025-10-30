@@ -60,7 +60,7 @@ const CategoryManage = () => {
     setSearchInput(e.target.value);
   }, 500);
 
-  if (userInfor.role !== userRole.ADMIN || userInfor.role !== userRole.MOD)
+  if (userInfor.role !== userRole.ADMIN && userInfor.role !== userRole.MOD)
     return (
       <div className="flex justify-center items-center">
         <div className="text-center text-lg text-gray-500">

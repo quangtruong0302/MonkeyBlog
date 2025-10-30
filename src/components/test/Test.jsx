@@ -6,19 +6,11 @@ import useUploadImage from "@hooks/useUploadImage";
 import { useForm } from "react-hook-form";
 
 const Test = () => {
-  const {
-    imgCloud,
-    // setImgCloud,
-    progress,
-    handleDeleteImage,
-    handleSelectImage,
-  } = useUploadImage();
+  const { imgCloud, progress, handleDeleteImage, handleSelectImage } =
+    useUploadImage();
   const { handleSubmit } = useForm({
     mode: "onChange",
   });
-  const handle = (values) => {
-    console.log(values);
-  };
   return (
     <div>
       <form onSubmit={handleSubmit(handle)}>

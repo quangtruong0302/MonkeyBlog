@@ -17,7 +17,6 @@ import { useNavigate, useParams } from "react-router-dom";
 const CategoryUpdate = () => {
   const {
     control,
-    // setValue,
     handleSubmit,
     watch,
     reset,
@@ -36,17 +35,13 @@ const CategoryUpdate = () => {
     const fetchData = async () => {
       const colRef = doc(db, "categories", id);
       const singleDoc = await getDoc(colRef);
-      const data = singleDoc.data();
-      console.log(data);
       reset(singleDoc.data());
-      console.log(...singleDoc.data());
     };
     fetchData();
   }, [id, reset]);
   if (!id) return null;
 
   const watchStatus = Number(watch("status"));
-  console.log(typeof watchStatus);
   const handleUpdateCategory = async (values) => {
     const colRef = doc(db, "categories", id);
     await updateDoc(colRef, {

@@ -18,7 +18,7 @@ const HomeFeature = () => {
       colRef,
       where("status", "==", 1),
       where("hot", "==", true),
-      limit(5)
+      limit(6)
     );
     let results = [];
     onSnapshot(queries, (snapshot) => {
@@ -34,14 +34,6 @@ const HomeFeature = () => {
   if (posts.length <= 0) return;
 
   return (
-    // <div className="container pt-15">
-    //   <Heading>Featured article</Heading>
-    //   <div className="grid grid-cols-3 gap-10 mt-5">
-    //     {posts.map((post) => (
-    //       <PostFeatureItem key={post.id} data={post}></PostFeatureItem>
-    //     ))}
-    //   </div>
-    // </div>
     <div className="container pt-10 sm:pt-12 lg:pt-15">
       <Heading className="text-[6vw] sm:text-[4.5vw] md:text-[3vw] lg:text-[2vw]">
         Featured article

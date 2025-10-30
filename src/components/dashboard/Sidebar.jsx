@@ -109,7 +109,7 @@ const sidebarLinks = [
 
 const Sidebar = () => {
   return (
-    <div className=" bg-white shadow-[10px_10px_20px_rgba(218,213,213,0.15)] rounded-xl hidden lg:block h-full">
+    <div className=" bg-white shadow-[10px_10px_20px_rgba(218,213,213,0.15)] rounded-xl hidden lg:block h-[calc(100vh-93px)]">
       <div className="p-5">
         {sidebarLinks.map((link) =>
           link.onClick ? (

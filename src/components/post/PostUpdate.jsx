@@ -18,7 +18,6 @@ import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import ImageResize from "quill-image-resize-module-react";
 Quill.register("modules/imageResize", ImageResize);
-// import useAuth from "@contexts/useAuth";
 
 import Button from "@components/button/Button";
 import DashboardHeading from "@components/dashboard/DashboardHeading";
@@ -38,7 +37,6 @@ import { useNavigate, useParams } from "react-router-dom";
 const PostUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  // const { userInfor } = useAuth();
 
   const schemaValidate = Yup.object({
     title: Yup.string().required("Title is required."),
@@ -157,8 +155,9 @@ const PostUpdate = () => {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
       ["bold", "italic", "underline"],
-      [{ list: "ordered" }, { list: "bullet" }],
+      [{ align: [] }],
       ["link", "image"],
+      [{ list: "ordered" }, { list: "bullet" }],
       ["clean"],
     ],
     imageResize: {
@@ -166,6 +165,10 @@ const PostUpdate = () => {
       modules: ["Resize", "DisplaySize"],
     },
   };
+
+  useEffect(() => {
+    document.title = "Update post";
+  }, []);
 
   return (
     <div className="flex flex-col gap-10">
@@ -246,13 +249,18 @@ const PostUpdate = () => {
                 </Radio>
               </div>
             </Field>
-            {/* Feature */}
+
             <Field>
               <Label>Feature post</Label>
-              <Toggle
-                on={watchHot}
-                onClick={() => setValue("hot", !watchHot)}
-              />
+              <div className="flex gap-3 items-center">
+                <Toggle
+                  on={watchHot}
+                  onClick={() => setValue("hot", !watchHot)}
+                />
+                <span className="text-sm text-slate-600">
+                  * Selecting this will make your post featured on the homepage.
+                </span>
+              </div>
             </Field>
           </div>
           <Field>
@@ -266,7 +274,6 @@ const PostUpdate = () => {
               handleDeleteImage={handleDeleteImage}
             />
           </Field>
-          {/* Status */}
         </div>
         <div className="my-10">
           <Field>

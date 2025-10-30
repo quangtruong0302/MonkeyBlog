@@ -58,6 +58,7 @@ const SignInPage = () => {
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
       toast.success(`Welcome!`);
+      navigate("/");
     } catch (error) {
       console.log(error);
       toast.error(

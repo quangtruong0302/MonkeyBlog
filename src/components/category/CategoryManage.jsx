@@ -9,16 +9,17 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { debounce } from "lodash";
 import React, { useState } from "react";
-import { categoryStatus } from "@utils/constant";
+import { categoryStatus, userRole } from "@utils/constant";
 import Pagination from "@components/pagination/Pagination";
 import LoadingSpiner from "@components/loading/LoadingSpiner";
 import { useFirestorePagination } from "@hooks/useFirestorePagination";
 import { db } from "@firebase-app/firebaseConfig";
 import { deleteDoc, doc } from "firebase/firestore";
+import useAuth from "@contexts/useAuth";
 
 const CategoryManage = () => {
   const [searchInput, setSearchInput] = useState("");
-
+  const { userInfor } = useAuth();
   const {
     data: categories,
     loading,
@@ -26,7 +27,7 @@ const CategoryManage = () => {
     currentPage,
     fetchPage,
   } = useFirestorePagination("categories", {
-    pageSize: 2,
+    pageSize: 8,
     orderField: "name",
     searchField: "name",
     searchValue: searchInput,
@@ -59,6 +60,14 @@ const CategoryManage = () => {
     setSearchInput(e.target.value);
   }, 500);
 
+  if (userInfor.role !== userRole.ADMIN || userInfor.role !== userRole.MOD)
+    return (
+      <div className="flex justify-center items-center">
+        <div className="text-center text-lg text-gray-500">
+          You do not have permission to access this page.
+        </div>
+      </div>
+    );
   return (
     <div className="flex flex-col gap-5">
       <DashboardHeading title="Categories"></DashboardHeading>
@@ -84,6 +93,9 @@ const CategoryManage = () => {
             <td className="whitespace-nowrap px-6 py-4 text-left">ID</td>
             <td className="whitespace-nowrap px-6 py-4 text-left">Name</td>
             <td className="whitespace-nowrap px-6 py-4 text-left">Slug</td>
+            <td className="whitespace-nowrap px-6 py-4 text-left">
+              Created At
+            </td>
             <td className="whitespace-nowrap px-6 py-4 text-left">Status</td>
             <td className="whitespace-nowrap px-6 py-4 text-left">Actions</td>
           </tr>
@@ -113,6 +125,10 @@ const CategoryManage = () => {
                 <td className="whitespace-nowrap px-6 py-4 text-gray-500">
                   {category.slug}
                 </td>
+                <td className="whitespace-nowrap px-6 py-4 text-gray-500">
+                  {category.createdAt &&
+                    category.createdAt.toDate().toLocaleString()}
+                </td>
                 <td className="whitespace-nowrap px-6 py-4">
                   {category.status === Number(categoryStatus.APPROVED) && (
                     <LabelStatus type="success">Approved</LabelStatus>
@@ -135,7 +151,7 @@ const CategoryManage = () => {
           ) : (
             <tr>
               <td
-                colSpan="5"
+                colSpan="6"
                 whitespace-nowrap
                 className="text-center py-10 text-gray-500"
               >

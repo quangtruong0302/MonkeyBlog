@@ -1,11 +1,9 @@
 import Button from "@components/button/Button";
-// import useAuth from "@contexts/useAuth";
+import useAuth from "@contexts/useAuth";
 import React from "react";
 import { Link, Links, NavLink } from "react-router-dom";
-
 const DashboardHeader = () => {
-  // const { userInfo } = useAuth();
-
+  const { userInfor } = useAuth();
   return (
     <div className="bg-white p-5 border-b border-gray-200 flex justify-between gap-5">
       <NavLink
@@ -20,12 +18,12 @@ const DashboardHeader = () => {
         <span className="hidden lg:inline-block">Monkey Blogging</span>
       </NavLink>
       <div className="flex items-center gap-5">
-        <Link to="/manage/add-post">
-          <Button className="h-[52px]">Write new post</Button>
-        </Link>
+        <span className="font-semibold">
+          {userInfor.fullname && userInfor.fullname}
+        </span>
         <Link to="/profile" className="w-[52px] h-[52px]">
           <img
-            src={"/images/man.png"}
+            src={userInfor?.avatar}
             alt="User Avatar"
             className="w-full h-full object-cover rounded-full"
           />

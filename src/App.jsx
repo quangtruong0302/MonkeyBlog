@@ -1,7 +1,5 @@
 function App() {
-  // const [count, setCount] = useState(0)
-
-  return <p>123323</p>;
+  return <p></p>;
 }
 
 export default App;

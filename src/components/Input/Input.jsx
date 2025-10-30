@@ -1,7 +1,5 @@
 import React, { Fragment } from "react";
 import { useController } from "react-hook-form";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faEye } from "@fortawesome/free-regular-svg-icons";
 
 const Input = ({ control, name, children, ...props }) => {
   const { field } = useController({

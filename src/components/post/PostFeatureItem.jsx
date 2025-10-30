@@ -7,7 +7,7 @@ import { db } from "@firebase-app/firebaseConfig";
 
 import getLastName from "@utils/getLastName";
 
-const PostFeatureItem = ({ data }) => {
+const PostFeatureItem = ({ data, className = "", text = "" }) => {
   const [category, setCategory] = useState({});
   const [user, setUser] = useState({});
 
@@ -34,7 +34,9 @@ const PostFeatureItem = ({ data }) => {
     ? createdAt.toLocaleDateString("vi-VI", { month: "short", day: "numeric" })
     : "";
   return (
-    <div className="relative rounded-lg border border-gray-200 boxShadow h-[333px] select-none">
+    <div
+      className={`relative rounded-lg border border-gray-200 boxShadow h-[333px] select-none ${className}`}
+    >
       <img
         className="rounded-lg w-full h-full"
         src={data?.imageUrl}
@@ -54,7 +56,7 @@ const PostFeatureItem = ({ data }) => {
             authorName={getLastName(user?.fullname)}
           ></PostMeta>
         </div>
-        <PostTitle className={"text-white text-2xl"} slug={data.slug}>
+        <PostTitle className={`text-white text-2xl ${text}`} slug={data.slug}>
           {data.title}
         </PostTitle>
       </div>

@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 const CategoryAddNew = () => {
   const {
     control,
-    // setValue,
     handleSubmit,
     watch,
     reset,

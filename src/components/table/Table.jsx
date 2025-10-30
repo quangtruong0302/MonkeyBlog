@@ -1,20 +1,3 @@
-// import React from "react";
-
-// const Table = ({ children }) => {
-//   return (
-//     <div className="overflow-x-auto bg-white rounded-lg">
-//       <table className="w-full">
-//         <thead className="bg-[#f7f7f8]">
-//           {/* Bạn có thể truyền <tr><th>...</th></tr> từ ngoài vào */}
-//         </thead>
-//         <tbody>{children}</tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// export default Table;
-
 import React from "react";
 
 const Table = ({ children }) => {

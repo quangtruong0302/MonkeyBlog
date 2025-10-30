@@ -16,8 +16,10 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "@firebase-app/firebaseConfig";
 import Swal from "sweetalert2";
 import Pagination from "@components/pagination/Pagination";
+import useAuth from "@contexts/useAuth";
 
 const UserManage = () => {
+  const { userInfor } = useAuth();
   const {
     data: users,
     loading,
@@ -55,6 +57,17 @@ const UserManage = () => {
     });
   };
 
+  if (Number(userInfor.role) !== userRole.ADMIN) {
+    console.log(userRole.ADMIN);
+    console.log(userInfor.role);
+    return (
+      <div className="flex justify-center items-center">
+        <div className="text-center text-lg text-gray-500">
+          You do not have permission to access this page.
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col gap-5">
       <DashboardHeading

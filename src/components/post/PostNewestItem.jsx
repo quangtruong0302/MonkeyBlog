@@ -1,28 +1,55 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PostCategory from "./PostCategory";
 import PostTitle from "./PostTitle";
 import PostMeta from "./PostMeta";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@firebase-app/firebaseConfig";
+import getLastName from "@utils/getLastName";
 
-const PostNewestItem = () => {
+const PostNewestItem = ({ data }) => {
+  const [category, setCategory] = useState({});
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    const fetchCategory = async () => {
+      const docRef = doc(db, "categories", data.categoryId);
+      const docSnap = await getDoc(docRef);
+      setCategory(docSnap.data());
+    };
+    fetchCategory();
+  }, [data.categoryId]);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const docRef = doc(db, "users", data.userId);
+      const docSnap = await getDoc(docRef);
+      setUser(docSnap.data());
+    };
+    fetchUser();
+  }, [data.userId]);
+  const createdAt = data.createdAt?.toDate();
+  const formattedDate = createdAt
+    ? createdAt.toLocaleDateString("vi-VI", { month: "short", day: "numeric" })
+    : "";
+
   return (
     <div className="flex gap-5">
       <div className="flex-2">
         <img
-          className="h-[182px] rounded-3xl"
-          src="https://cdn.prod.website-files.com/63bd2733c7e2f16bd005016f/668612aa6319bebdce85a785_Untitled%20design.zip%20-%20FullStack%20Web%20final%20project-3.jpeg"
+          className="h-[182px] rounded-3xl w-full"
+          src={data?.imageUrl || ""}
           alt=""
         />
       </div>
       <div className="flex-3 flex flex-col gap-5 items-start">
         <PostCategory className={"bg-[#F3EDFF] text-[#636e72] inline-block"}>
-          Kiến thức
+          {category?.name}
         </PostCategory>
         <PostTitle className={"text-[#636e72] font-semibold text-xl"}>
-          Hướng dẫn học lập trình cho người mới tại W3School
+          {data?.title}
         </PostTitle>
         <PostMeta
-          date={"Mar 18"}
-          authorName={"Yến Tử"}
+          date={formattedDate}
+          authorName={getLastName(user?.fullname)}
           className="text-black"
         ></PostMeta>
       </div>

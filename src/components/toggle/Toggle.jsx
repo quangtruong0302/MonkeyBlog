@@ -1,26 +1,35 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-const Toggle = (props) => {
-  const { on, onClick, ...rest } = props;
+const Toggle = ({ on: initialOn, onClick, ...rest }) => {
+  const [toggle, setToggle] = useState(initialOn);
+  useEffect(() => {
+    setToggle(initialOn);
+  }, [initialOn]);
+
+  const handleClick = () => {
+    const newValue = !toggle;
+    setToggle(newValue);
+    if (onClick) onClick(newValue);
+  };
 
   return (
     <label>
       <input
         type="checkbox"
-        checked={on}
+        checked={toggle}
         className="hidden"
         onChange={() => {}}
-        onClick={onClick}
       />
       <div
-        className={`inline-block w-[70px] h-[42px] relative cursor-pointer rounded-full p-1 transition-all ${
-          on ? "bg-secondary" : "bg-gray-300"
+        className={`inline-block w-[66px] h-[38px] relative cursor-pointer rounded-full p-1 transition-all ${
+          toggle ? "bg-secondary" : "bg-gray-300"
         }`}
+        onClick={handleClick}
         {...rest}
       >
         <span
-          className={`transition-all w-[34px] h-[34px] bg-white rounded-full inline-block ${
-            on ? "translate-x-[28px]" : ""
+          className={`transition-all w-[30px] h-[30px] bg-white rounded-full inline-block ${
+            toggle ? "translate-x-[28px]" : ""
           }`}
         ></span>
       </div>

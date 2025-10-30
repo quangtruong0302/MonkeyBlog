@@ -6,7 +6,7 @@ const List = ({ children }) => {
   return (
     <>
       {show && (
-        <div className="absolute top-full left-0 w-full bg-white shadow-sm rounded-sm">
+        <div className="absolute top-full left-0 w-full max-h-64 overflow-y-auto bg-white shadow-sm rounded-sm">
           {children}
         </div>
       )}

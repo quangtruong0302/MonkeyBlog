@@ -10,12 +10,13 @@ import { Link } from "react-router-dom";
 import { useFirestorePagination } from "@hooks/useFirestorePagination";
 import { debounce } from "lodash";
 import LoadingSpiner from "@components/loading/LoadingSpiner";
-import { deleteDoc, doc, getDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@firebase-app/firebaseConfig";
 import LabelStatus from "@components/label/LabelStatus";
 import { postStatus } from "@utils/constant";
 import Toggle from "@components/toggle/Toggle";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 const PostManage = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -29,7 +30,7 @@ const PostManage = () => {
     currentPage,
     fetchPage,
   } = useFirestorePagination("posts", {
-    pageSize: 3,
+    pageSize: 4,
     orderField: "title",
     searchField: "title",
     searchValue: searchInput,
@@ -66,7 +67,6 @@ const PostManage = () => {
           newUserMap[post.userId] = user?.fullname || "Unknown";
         }
       }
-
       setCategoryMap(newCategoryMap);
       setUserMap(newUserMap);
     };
@@ -96,9 +96,19 @@ const PostManage = () => {
     });
   };
 
+  const handleChangeHot = async (id, post) => {
+    const docRef = doc(db, "posts", id);
+    await updateDoc(docRef, {
+      ...post,
+      hot: !post?.hot,
+    });
+
+    toast.success("Post updated successfully!");
+  };
+
   return (
     <div className="flex flex-col gap-5">
-      <DashboardHeading title="All posts" />
+      <DashboardHeading title="All posts" desc="Manage all posts" />
       <div className="flex items-center justify-between gap-5">
         <Link to="/manage/add-post">
           <Button>Add new post</Button>
@@ -122,7 +132,7 @@ const PostManage = () => {
             <th className="px-6 py-4 text-left">Category</th>
             <th className="px-6 py-4 text-left">Author</th>
             <th className="px-6 py-4 text-left">Status</th>
-            <th className="px-6 py-4 text-left">Hot</th>
+            <th className="px-6 py-4 text-left">Feature</th>
             <th className="px-6 py-4 text-left">Actions</th>
           </tr>
         </thead>
@@ -142,7 +152,7 @@ const PostManage = () => {
                 </td>
 
                 <td className="px-6 py-4 text-gray-900 font-medium flex items-center gap-3">
-                  <div className="w-30 rounded-sm">
+                  <div className="w-28 rounded-sm">
                     <img
                       src={post.imageUrl && post.imageUrl}
                       alt=""
@@ -150,10 +160,17 @@ const PostManage = () => {
                     />
                   </div>
                   <div className="flex-1 flex flex-col gap-1">
-                    <div>{post.title}</div>
-                    <div className="text-sm text-gray-500">
-                      CreatedAt:{" "}
-                      {post.createdAt.toDate().toLocaleDateString("vi-VN")}
+                    <div className="">{post.title}</div>
+                    <div className="text-xs text-gray-500 flex gap-3 items-center justify-start">
+                      <div>
+                        CreatedAt:{" "}
+                        {post.createdAt.toDate().toLocaleString("vi-VN")}
+                      </div>
+                      <div className="h-3 border "></div>
+                      <div>
+                        UpdatedAt:{" "}
+                        {post.updatedAt.toDate().toLocaleString("vi-VN")}
+                      </div>
                     </div>
                   </div>
                 </td>
@@ -179,7 +196,7 @@ const PostManage = () => {
                 <td className="px-6 py-4 text-gray-500">
                   <Toggle
                     on={post.hot}
-                    // onClick={() => setValue("hot", !watchHot)}
+                    onClick={() => handleChangeHot(post.id, post)}
                   ></Toggle>
                 </td>
 
@@ -191,14 +208,14 @@ const PostManage = () => {
                     <Link to={`/manage/update-post/${post.id}`}>
                       <Edit />
                     </Link>
-                    <Delete onClick={() => handleDeletePost(post.id)} />
+                    <Delete onClick={() => handleDeletePost(post.id, post)} />
                   </div>
                 </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="text-center py-10 text-gray-500">
+              <td colSpan="7" className="text-center py-10 text-gray-500">
                 No posts found
               </td>
             </tr>

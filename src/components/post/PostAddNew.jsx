@@ -65,7 +65,6 @@ const PostAddNew = () => {
   } = useUploadImage();
   const watchStatus = Number(watch("status"));
   const watchHot = watch("hot");
-  // const watchCategory = watch("category");
 
   const handleAddNewPost = async (values) => {
     setIsLoading(true);
@@ -221,10 +220,15 @@ const PostAddNew = () => {
           </Field>
           <Field>
             <Label>Feature post</Label>
-            <Toggle
-              on={watchHot === true}
-              onClick={() => setValue("hot", !watchHot)}
-            ></Toggle>
+            <div className="flex gap-3 items-center">
+              <Toggle
+                on={watchHot === true}
+                onClick={() => setValue("hot", !watchHot)}
+              ></Toggle>
+              <span className="text-sm text-slate-600">
+                * Selecting this will make your post featured on the homepage.
+              </span>
+            </div>
           </Field>
         </div>
         <div className="mx-auto w-[250px]">

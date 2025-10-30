@@ -74,7 +74,6 @@ const UserUpdate = () => {
     handleDeleteImage,
   } = useUploadImage(setValue, getValues);
 
-  // Fetch user data
   useEffect(() => {
     const fetchUser = async () => {
       if (!id) return;
@@ -83,7 +82,6 @@ const UserUpdate = () => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         reset(data);
-        console.log(data);
         setUser(data);
         if (data.avatar) {
           setImgCloud(data.avatar);
@@ -93,7 +91,6 @@ const UserUpdate = () => {
     fetchUser();
   }, [id, reset, setImgCloud]);
 
-  // Show first error toast
   useEffect(() => {
     const arrayErrors = Object.values(errors);
     if (arrayErrors.length > 0) {
@@ -101,7 +98,6 @@ const UserUpdate = () => {
     }
   }, [errors]);
 
-  // Khi click xóa ảnh
   const handleDeleteCurrentImage = () => {
     setImgCloud("");
     setValue("avatar", DEFAULT_AVATAR);
@@ -112,9 +108,7 @@ const UserUpdate = () => {
 
   const handleUpdateUser = async (values) => {
     try {
-      // Lưu avatar mới nếu có thay đổi, nếu không thì giữ default
       const urlAvatar = imgCloud ? imgCloud : DEFAULT_AVATAR;
-
       await updateDoc(doc(db, "users", id), {
         ...values,
         avatar: urlAvatar,
@@ -139,7 +133,6 @@ const UserUpdate = () => {
         onSubmit={handleSubmit(handleUpdateUser)}
         className="flex flex-col justify-center gap-10 px-30"
       >
-        {/* Avatar */}
         <div className="w-[250px] h-[250px] mx-auto rounded-full">
           <ImageUpload
             className="!rounded-full !p-0 h-full"
@@ -151,7 +144,6 @@ const UserUpdate = () => {
           />
         </div>
 
-        {/* User Info */}
         <div className="grid grid-cols-2 gap-y-10 gap-x-5">
           <Field>
             <Label>Fullname</Label>

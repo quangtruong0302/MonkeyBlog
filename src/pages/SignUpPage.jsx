@@ -110,7 +110,6 @@ const SignUpPage = () => {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      {/* <ToastContainer></ToastContainer> */}
       <div className="bg-white w-[550px] h-fit p-8 border border-gray-100 shadow-sm rounded-2xl">
         <img className="mx-auto w-[75px]" src="/images/logo.png" alt="" />
         <div>

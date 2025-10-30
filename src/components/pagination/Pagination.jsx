@@ -3,10 +3,9 @@ import React from "react";
 const Pagination = ({ totalPages, currentPage, onPageChange }) => {
   if (totalPages <= 1) return null;
 
-  // 👇 Hàm tạo danh sách số trang (có ... ở giữa)
   const getPageNumbers = () => {
     const pages = [];
-    const maxVisible = 5; // tối đa số trang hiển thị
+    const maxVisible = 5;
     if (totalPages <= maxVisible) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
@@ -33,7 +32,6 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
 
   return (
     <div className="flex justify-center items-center gap-2 select-none mt-8">
-      {/* Nút Prev */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
@@ -60,7 +58,6 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
         </svg>
       </button>
 
-      {/* Danh sách trang */}
       <ul className="flex items-center gap-2">
         {pageNumbers.map((page, index) =>
           page === "..." ? (
@@ -86,7 +83,6 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
         )}
       </ul>
 
-      {/* Nút Next */}
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}

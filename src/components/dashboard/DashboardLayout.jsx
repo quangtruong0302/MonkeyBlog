@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 
 const DashboardLayout = () => {
   const { userInfor } = useAuth();
+  console.log(userInfor);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,7 +28,6 @@ const DashboardLayout = () => {
   return (
     <Fragment>
       <div className="max-w-[1600px] mx-auto">
-        {/* <ToastContainer></ToastContainer> */}
         <DashboardHeader />
       </div>
       <div className="flex gap-5">

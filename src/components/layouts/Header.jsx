@@ -27,10 +27,10 @@ const MENU_ITEMS = [
 
 const Header = () => {
   const { userInfor } = useAuth();
+  console.log(userInfor);
   return (
     <header className="py-4 sm:py-5 shadow-md">
       <div className="container flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 lg:gap-0">
-        {/* Logo và Menu */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4 lg:gap-10 w-full lg:w-auto">
           <a href="/">
             <img src="/images/logo.png" alt="" className="w-12 sm:w-10" />
@@ -48,8 +48,6 @@ const Header = () => {
             ))}
           </ul>
         </div>
-
-        {/* Search + Auth */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-start lg:justify-between gap-3 lg:gap-5 w-full lg:w-auto">
           <div className="w-full lg:w-[500px]">
             <div className="border border-gray-300 rounded-sm px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-2 sm:gap-4">
@@ -83,7 +81,7 @@ const Header = () => {
               <div>
                 <span>Welcome back, </span>
                 <strong className="text-primary">
-                  {getLastName(userInfor?.displayName || "")}
+                  {userInfor && getLastName(userInfor?.fullname || "")}
                 </strong>
 
                 <Link to={"/dashboard"}>

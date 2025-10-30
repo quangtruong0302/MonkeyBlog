@@ -13,7 +13,7 @@ import Button from "@components/button/Button";
 import LoadingSpiner from "@components/loading/LoadingSpiner";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "@firebase-app/firebaseConfig";
-import { addDoc, collection } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -73,25 +73,39 @@ const UserAddNew = () => {
     handleDeleteImage,
   } = useUploadImage(setValue, getValues);
 
-  console.log(imgCloud);
-
   const handleAddNewUser = async (values) => {
     try {
-      await createUserWithEmailAndPassword(auth, values.email, values.password);
-      await addDoc(collection(db, "users"), {
+      // await createUserWithEmailAndPassword(auth, values.email, values.password);
+      // await addDoc(collection(db, "users"), {
+      //   fullname: values.fullname,
+      //   username: values.username,
+      //   email: values.email,
+      //   avatar:
+      //     imgCloud.url ||
+      //     "https://res.cloudinary.com/dqo9guoih/image/upload/v1761659184/e6fvpyxm3jng42aog4ds.png",
+      //   password: values.password,
+      //   status: Number(values.status),
+      //   role: Number(values.role),
+      //   createdAt: new Date(),
+      //   updatedAt: new Date(),
+      // });
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      );
+      const uid = userCredential.user.uid;
+      await setDoc(doc(db, "users", uid), {
         fullname: values.fullname,
         username: values.username,
         email: values.email,
-        avatar:
-          imgCloud.url ||
-          "https://res.cloudinary.com/dqo9guoih/image/upload/v1761659184/e6fvpyxm3jng42aog4ds.png",
+        avatar: values.avatar || null,
         password: values.password,
-        status: Number(values.status),
-        role: Number(values.role),
+        status: Number(values.status) || 1,
+        role: Number(values.role) || 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-
       reset({
         fullname: "",
         email: "",

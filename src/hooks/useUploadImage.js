@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { uploadToCloudinary } from "@utils/uploadToCloudinary";
-// import { deleteFromCloudinary } from "@utils/deleteFromCloudinary";
 
 const useUploadImage = () => {
   const [progress, setProgress] = useState(0);
